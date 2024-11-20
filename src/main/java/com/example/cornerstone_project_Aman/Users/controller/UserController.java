@@ -1,7 +1,7 @@
-package com.example.cornerstone_project_Aman.Auth.controller;
+package com.example.cornerstone_project_Aman.Users.controller;
 
-import com.example.cornerstone_project_Aman.Auth.entity.User;
-import com.example.cornerstone_project_Aman.Auth.services.UserService;
+import com.example.cornerstone_project_Aman.Users.entity.User;
+import com.example.cornerstone_project_Aman.Users.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RequestMapping("/users")
 @RestController
 public class UserController {
     private final UserService userService;
@@ -29,7 +28,8 @@ public class UserController {
         return ResponseEntity.ok(currentUser);
     }
 
-    @GetMapping("/")
+    @RequestMapping("/users")
+
     public ResponseEntity<List<User>> allUsers() {
         List<User> users = userService.allUsers();
 

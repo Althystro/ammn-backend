@@ -1,6 +1,6 @@
 package com.example.cornerstone_project_Aman.Auth.config;
 
-import com.example.cornerstone_project_Aman.Auth.repositories.UserRepository;
+import com.example.cornerstone_project_Aman.Users.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

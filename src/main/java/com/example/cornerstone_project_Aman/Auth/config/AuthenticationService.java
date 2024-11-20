@@ -2,8 +2,8 @@ package com.example.cornerstone_project_Aman.Auth.config;
 
 import com.example.cornerstone_project_Aman.Auth.bo.LoginUserRequest;
 import com.example.cornerstone_project_Aman.Auth.bo.RegisterUserRequest;
-import com.example.cornerstone_project_Aman.Auth.entity.User;
-import com.example.cornerstone_project_Aman.Auth.repositories.UserRepository;
+import com.example.cornerstone_project_Aman.Users.entity.User;
+import com.example.cornerstone_project_Aman.Users.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;

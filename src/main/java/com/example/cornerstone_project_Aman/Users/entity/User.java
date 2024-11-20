@@ -1,4 +1,4 @@
-package com.example.cornerstone_project_Aman.Auth.entity;
+package com.example.cornerstone_project_Aman.Users.entity;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;

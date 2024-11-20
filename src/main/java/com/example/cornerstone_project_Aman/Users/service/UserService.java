@@ -1,7 +1,8 @@
-package com.example.cornerstone_project_Aman.Auth.services;
+package com.example.cornerstone_project_Aman.Users.service;
 
-import com.example.cornerstone_project_Aman.Auth.entity.User;
-import com.example.cornerstone_project_Aman.Auth.repositories.UserRepository;
+import com.example.cornerstone_project_Aman.Users.bo.ProfileResponse;
+import com.example.cornerstone_project_Aman.Users.entity.User;
+import com.example.cornerstone_project_Aman.Users.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,4 +23,11 @@ public class UserService {
 
         return users;
     }
+
+    public ProfileResponse myUsername() {
+        ProfileResponse myUser = new ProfileResponse();
+
+        return myUser;
+    }
+
 }

@@ -1,6 +1,6 @@
 package com.example.cornerstone_project_Aman.Auth.config;
 
-import com.example.cornerstone_project_Aman.Auth.services.JwtService;
+import com.example.cornerstone_project_Aman.Auth.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

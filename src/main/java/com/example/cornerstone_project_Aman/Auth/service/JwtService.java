@@ -1,4 +1,4 @@
-package com.example.cornerstone_project_Aman.Auth.services;
+package com.example.cornerstone_project_Aman.Auth.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
