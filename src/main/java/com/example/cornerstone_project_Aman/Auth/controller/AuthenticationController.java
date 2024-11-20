@@ -2,6 +2,7 @@ package com.example.cornerstone_project_Aman.Auth.controller;
 
 import com.example.cornerstone_project_Aman.Auth.bo.LoginResponse;
 import com.example.cornerstone_project_Aman.Auth.bo.LoginUserRequest;
+import com.example.cornerstone_project_Aman.Auth.bo.RegisterResponse;
 import com.example.cornerstone_project_Aman.Auth.bo.RegisterUserRequest;
 import com.example.cornerstone_project_Aman.Auth.config.AuthenticationService;
 import com.example.cornerstone_project_Aman.Auth.entity.User;
@@ -25,10 +26,21 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<User> register(@RequestBody RegisterUserRequest registerUserRequest) {
+    public ResponseEntity<RegisterResponse> register(@RequestBody RegisterUserRequest registerUserRequest) {
         User registeredUser = authenticationService.signup(registerUserRequest);
+        String jwtToken = jwtService.generateToken(registeredUser);
 
-        return ResponseEntity.ok(registeredUser);
+        RegisterResponse registerResponse = new RegisterResponse();
+
+        registerResponse.setId(registerResponse.getId());
+        registerResponse.setFullName(registeredUser.getFullName());
+        registerResponse.setEmail(registeredUser.getEmail());
+        registerResponse.setToken(jwtToken);
+        registerResponse.setExpiresIn(jwtService.getExpirationTime());
+        registerResponse.setId(registeredUser.getId());
+        return ResponseEntity.ok(registerResponse);
+
+
     }
 
     @PostMapping("/login")
