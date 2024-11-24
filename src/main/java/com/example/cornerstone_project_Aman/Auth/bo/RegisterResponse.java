@@ -3,10 +3,21 @@ package com.example.cornerstone_project_Aman.Auth.bo;
 public class RegisterResponse {
 
     private long id;
-    private String fullName;
+
+    private String firstName;
+
+    private String lastName;
+
     private String email;
+
+    private String civilId;
+
+    private String phoneNumber;
+
     private String token;
+
     private long expiresIn;
+
 
     public long getId() {
         return id;
@@ -16,12 +27,20 @@ public class RegisterResponse {
         this.id = id;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getEmail() {
@@ -30,6 +49,22 @@ public class RegisterResponse {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getCivilId() {
+        return civilId;
+    }
+
+    public void setCivilId(String civilId) {
+        this.civilId = civilId;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getToken() {

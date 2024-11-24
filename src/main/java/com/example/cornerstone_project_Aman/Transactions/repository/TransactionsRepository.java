@@ -1,4 +1,18 @@
 package com.example.cornerstone_project_Aman.Transactions.repository;
 
-public interface TransactionsRepository {
+import com.example.cornerstone_project_Aman.Transactions.entity.Transactions;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface TransactionsRepository extends JpaRepository<Transactions, Long> {
+    List<Transactions> findByWalletId(Long walletId);
+
+    List<Transactions> findByWallet_UserId(Long userId);
+
+//    Optional<Wallet> findByUserId(Long userId);
+
 }
+

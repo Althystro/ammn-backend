@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.TimeUnit;
+
 @RequestMapping("/auth")
 @RestController
 public class AuthenticationController {
@@ -31,13 +33,15 @@ public class AuthenticationController {
         String jwtToken = jwtService.generateToken(registeredUser);
 
         RegisterResponse registerResponse = new RegisterResponse();
-
         registerResponse.setId(registerResponse.getId());
-        registerResponse.setFullName(registeredUser.getFullName());
+        registerResponse.setFirstName(registeredUser.getFirstName());
+        registerResponse.setLastName(registeredUser.getLastName());
         registerResponse.setEmail(registeredUser.getEmail());
+        registerResponse.setPhoneNumber(registeredUser.getPhoneNumber());
+        registerResponse.setCivilId(registeredUser.getCivilId());
         registerResponse.setToken(jwtToken);
-        registerResponse.setExpiresIn(jwtService.getExpirationTime());
-        registerResponse.setId(registeredUser.getId());
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(jwtService.getExpirationTime());
+        registerResponse.setExpiresIn(minutes);
         return ResponseEntity.ok(registerResponse);
 
 

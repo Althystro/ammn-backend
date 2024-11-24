@@ -1,5 +1,6 @@
 package com.example.cornerstone_project_Aman.Users.entity;
 
+import com.example.cornerstone_project_Aman.Wallet.entity.Wallet;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -9,8 +10,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Date;
 
-@Table(name = "users")
 @Entity
+@Table(name = "users")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -18,13 +19,22 @@ public class User implements UserDetails {
     private Long id;
 
     @Column(nullable = false)
-    private String fullName;
+    private String firstName;
+
+    @Column(nullable = false)
+    private String lastName;
 
     @Column(unique = true, length = 100, nullable = false)
     private String email;
 
     @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
+    private String civilId;
+
+    @Column(nullable = false)
+    private String phoneNumber;
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
@@ -34,7 +44,13 @@ public class User implements UserDetails {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    // Getters and setters for fields
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "wallet_id", referencedColumnName = "id", nullable = true)
+
+    private Wallet wallet;
+
+    // Getters and Setters
+
     public Long getId() {
         return id;
     }
@@ -43,12 +59,20 @@ public class User implements UserDetails {
         this.id = id;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getEmail() {
@@ -59,12 +83,29 @@ public class User implements UserDetails {
         this.email = email;
     }
 
+    @Override
     public String getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getCivilId() {
+        return civilId;
+    }
+
+    public void setCivilId(String civilId) {
+        this.civilId = civilId;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public Date getCreatedAt() {
@@ -83,40 +124,46 @@ public class User implements UserDetails {
         this.updatedAt = updatedAt;
     }
 
+    public Wallet getWallet() {
+        return wallet;
+    }
+
+    public void setWallet(Wallet wallet) {
+        this.wallet = wallet;
+        if (wallet != null && wallet.getUser() != this) { // Ensure bidirectional consistency
+            wallet.setUser(this);
+        }
+    }
+
     // Implementations of UserDetails methods
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Return the roles or authorities granted to the user. For now, you can return null or an empty list.
-        return null;  // You should modify this to return actual roles.
+        return null; // Modify to return actual roles/authorities if needed.
     }
 
     @Override
     public String getUsername() {
-        // The username is typically the email in many applications.
-        return email;
+        return email; // Typically, username is the email.
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        // Return true if the account is not expired.
-        return true;  // Modify based on your business logic.
+        return true; // Modify based on your business logic.
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        // Return true if the account is not locked.
-        return true;  // Modify based on your business logic.
+        return true; // Modify based on your business logic.
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        // Return true if the credentials (password) are not expired.
-        return true;  // Modify based on your business logic.
+        return true; // Modify based on your business logic.
     }
 
     @Override
     public boolean isEnabled() {
-        // Return true if the user is enabled (active).
-        return true;  // Modify based on your business logic.
+        return true; // Modify based on your business logic.
     }
 }
