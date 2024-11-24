@@ -1,16 +1,16 @@
 package com.example.cornerstone_project_Aman.Users.controller;
 
+import com.example.cornerstone_project_Aman.Users.bo.ProfileResponse;
 import com.example.cornerstone_project_Aman.Users.entity.User;
 import com.example.cornerstone_project_Aman.Users.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequestMapping("/users")
 @RestController
 public class UserController {
     private final UserService userService;
@@ -28,11 +28,17 @@ public class UserController {
         return ResponseEntity.ok(currentUser);
     }
 
-    @RequestMapping("/users")
-
+    @GetMapping
     public ResponseEntity<List<User>> allUsers() {
         List<User> users = userService.allUsers();
 
         return ResponseEntity.ok(users);
+    }
+
+
+    @PostMapping("/findUserByEmail")
+    public ResponseEntity<ProfileResponse> allUsers(@RequestBody ProfileResponse email) {
+        ProfileResponse user = userService.findByEmail(email);
+        return ResponseEntity.ok(user);
     }
 }

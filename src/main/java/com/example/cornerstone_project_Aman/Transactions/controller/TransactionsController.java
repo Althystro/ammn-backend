@@ -2,6 +2,7 @@ package com.example.cornerstone_project_Aman.Transactions.controller;
 
 import com.example.cornerstone_project_Aman.Transactions.bo.TransactionsRequest;
 import com.example.cornerstone_project_Aman.Transactions.bo.TransactionsResponse;
+import com.example.cornerstone_project_Aman.Transactions.bo.TransferRequest;
 import com.example.cornerstone_project_Aman.Transactions.entity.Transactions;
 import com.example.cornerstone_project_Aman.Transactions.service.TransactionsService;
 import com.example.cornerstone_project_Aman.Users.entity.User;
@@ -45,12 +46,6 @@ public class TransactionsController {
         TransactionsResponse response = transactionsService.depositAccount(transactionsRequest);
         return ResponseEntity.ok(response);
 
-        //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        User currentUser = (User) authentication.getPrincipal();
-//        Wallet userWallet = currentUser.getWallet();
-//        List<Transactions> transactionsList = userWallet.getTransactions();
-//        transactionsList.add(transactionsRequest);
-//        return ResponseEntity.ok(transactionsList);
 
     }
 
@@ -60,12 +55,18 @@ public class TransactionsController {
         TransactionsResponse response = transactionsService.withdrawAccount(transactionsRequest);
         return ResponseEntity.ok(response);
 
-        //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        User currentUser = (User) authentication.getPrincipal();
-//        Wallet userWallet = currentUser.getWallet();
-//        List<Transactions> transactionsList = userWallet.getTransactions();
-//        transactionsList.add(transactionsRequest);
-//        return ResponseEntity.ok(transactionsList);
+    }
 
+    @PostMapping("/wallet/transactions/transfer")
+    public ResponseEntity<TransactionsResponse> transferTransaction(@RequestBody TransferRequest transferRequest) {
+
+        TransactionsResponse response = transactionsService.transferToAccount(transferRequest);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/wallet/transactions/salfni")
+    public ResponseEntity<TransactionsResponse> salfniTransaction(@RequestBody TransferRequest salfniRequest) {
+        TransactionsResponse response = transactionsService.salfniToAccount(salfniRequest);
+        return ResponseEntity.ok(response);
     }
 }
