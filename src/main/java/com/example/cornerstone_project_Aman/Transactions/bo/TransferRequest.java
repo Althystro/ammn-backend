@@ -2,15 +2,27 @@ package com.example.cornerstone_project_Aman.Transactions.bo;
 
 
 import com.example.cornerstone_project_Aman.Transactions.entity.TransactionType;
+import com.example.cornerstone_project_Aman.Wallet.entity.Wallet;
 
 import java.util.Date;
 
-public class TransactionsResponse {
+public class TransferRequest {
     private TransactionType type;
     private double amount;
+    private String email;
     private Date transactionDate;
-    private Long walletId;
+    private Wallet wallet;
 
+    // Getters and setters
+
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public TransactionType getType() {
         return type;
@@ -36,11 +48,4 @@ public class TransactionsResponse {
         this.transactionDate = transactionDate;
     }
 
-    public Long getWalletId() {
-        return walletId;
-    }
-
-    public void setWalletId(Long walletId) {
-        this.walletId = walletId;
-    }
 }

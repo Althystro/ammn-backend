@@ -1,6 +1,7 @@
 package com.example.cornerstone_project_Aman.Users.entity;
 
 import com.example.cornerstone_project_Aman.Wallet.entity.Wallet;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -46,7 +47,7 @@ public class User implements UserDetails {
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "wallet_id", referencedColumnName = "id", nullable = true)
-
+    @JsonIgnoreProperties(value = {"user"})
     private Wallet wallet;
 
     // Getters and Setters

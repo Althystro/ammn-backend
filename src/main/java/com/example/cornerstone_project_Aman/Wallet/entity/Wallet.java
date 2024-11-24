@@ -2,6 +2,7 @@ package com.example.cornerstone_project_Aman.Wallet.entity;
 
 import com.example.cornerstone_project_Aman.Transactions.entity.Transactions;
 import com.example.cornerstone_project_Aman.Users.entity.User;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -21,10 +22,13 @@ public class Wallet {
     // One-to-One relationship with User
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JsonIgnoreProperties(value = {"wallet"})
     private User user;
 
     // One-to-Many relationship with Transactions
     @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonIgnoreProperties(value = {"wallet"})
+
     private List<Transactions> transactions;
 
 

@@ -30,4 +30,43 @@ public class UserService {
         return myUser;
     }
 
+
+    public ProfileResponse findByEmail(ProfileResponse email) {
+        // Query the database for the user by email
+
+        User user = userRepository.findByEmail(email.getEmail()).orElseThrow(() -> new IllegalArgumentException("User not found with email: " + email));
+
+        // Map the User entity to a ProfileResponse DTO
+        ProfileResponse profileResponse = new ProfileResponse();
+        profileResponse.setId(user.getId());
+        profileResponse.setFirstName(user.getFirstName());
+        profileResponse.setLastName(user.getLastName());
+        profileResponse.setCivilId(user.getCivilId());
+        profileResponse.setEmail(user.getEmail());
+        profileResponse.setPhoneNumber(user.getPhoneNumber());
+        // Add other fields as needed
+
+        return profileResponse;
+    }
+
+    public User findByEmailString(String email) {
+        // Query the database for the user by email
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + email));
+
+        // Map the User entity to a ProfileResponse DTO
+        User profileResponse = new User();
+        profileResponse.setId(user.getId());
+        profileResponse.setFirstName(user.getFirstName());
+        profileResponse.setLastName(user.getLastName());
+        profileResponse.setCivilId(user.getCivilId());
+        profileResponse.setEmail(user.getEmail());
+        profileResponse.setPhoneNumber(user.getPhoneNumber());
+        profileResponse.setWallet(user.getWallet());
+        // Add other fields as needed
+
+        return profileResponse;
+    }
 }
+
+
