@@ -16,6 +16,7 @@ public class GityaAccountService {
 
     public GityaAccountService(GityaAccountRepository accountRepository) {
         this.accountRepository = accountRepository;
+
     }
 
     // Get account by ID
