@@ -8,7 +8,6 @@ public class TransactionsRequest {
     private TransactionType type;
     private double amount;
     private Date transactionDate;
-    private Long walletId; // Reference to the Wallet ID
 
     // Getters and setters
 
@@ -37,11 +36,4 @@ public class TransactionsRequest {
         this.transactionDate = transactionDate;
     }
 
-    public Long getWalletId() {
-        return walletId;
-    }
-
-    public void setWalletId(Long walletId) {
-        this.walletId = walletId;
-    }
 }

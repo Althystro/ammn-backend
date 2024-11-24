@@ -9,9 +9,7 @@ public class TransactionsResponse {
     private TransactionType type;
     private double amount;
     private Date transactionDate;
-    private Long walletId; // Reference to the Wallet ID
-
-    // Getters and setters
+    private Long walletId;
 
 
     public TransactionType getType() {

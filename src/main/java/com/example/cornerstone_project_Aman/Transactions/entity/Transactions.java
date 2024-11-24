@@ -1,6 +1,7 @@
 package com.example.cornerstone_project_Aman.Transactions.entity;
 
 import com.example.cornerstone_project_Aman.Wallet.entity.Wallet;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -14,8 +15,6 @@ public class Transactions {
     @Column(nullable = false)
     private Long id;
 
-    @Column(nullable = false)
-    private String balance;
 
     @Enumerated(EnumType.STRING) // Assuming TransactionType is an enum
     @Column(nullable = false)
@@ -29,6 +28,8 @@ public class Transactions {
 
     @ManyToOne
     @JoinColumn(name = "wallet_id", referencedColumnName = "id", nullable = false)
+    @JsonIgnoreProperties(value = {"transactions"})
+
     private Wallet wallet; // Reference to the Wallet entity
 
     // Getters and setters
@@ -38,14 +39,6 @@ public class Transactions {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getBalance() {
-        return balance;
-    }
-
-    public void setBalance(String balance) {
-        this.balance = balance;
     }
 
     public TransactionType getType() {
