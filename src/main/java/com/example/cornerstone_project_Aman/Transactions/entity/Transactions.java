@@ -16,7 +16,7 @@ public class Transactions {
     private Long id;
 
 
-    @Enumerated(EnumType.STRING) // Assuming TransactionType is an enum
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TransactionType type;
 
@@ -30,9 +30,8 @@ public class Transactions {
     @JoinColumn(name = "wallet_id", referencedColumnName = "id", nullable = false)
     @JsonIgnoreProperties(value = {"transactions"})
 
-    private Wallet wallet; // Reference to the Wallet entity
+    private Wallet wallet;
 
-    // Getters and setters
     public Long getId() {
         return id;
     }

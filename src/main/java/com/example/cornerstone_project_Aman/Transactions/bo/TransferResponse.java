@@ -11,8 +11,6 @@ public class TransferResponse {
     private Long receiverId;
     private Date transactionDate;
 
-    // Getters and setters
-
 
     public Long getReceiverId() {
         return receiverId;

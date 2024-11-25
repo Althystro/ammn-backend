@@ -12,10 +12,6 @@ public interface TransactionsRepository extends JpaRepository<Transactions, Long
 
     List<Transactions> findByWallet_UserId(Long userId);
 
-//    List<Transactions>depositTransactions
-
-
-//    Optional<Wallet> findByUserId(Long userId);
 
 }
 

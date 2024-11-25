@@ -13,8 +13,6 @@ public class TransferRequest {
     private Date transactionDate;
     private Wallet wallet;
 
-    // Getters and setters
-
 
     public String getEmail() {
         return email;

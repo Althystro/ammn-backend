@@ -9,8 +9,6 @@ public class TransactionsRequest {
     private double amount;
     private Date transactionDate;
 
-    // Getters and setters
-
 
     public TransactionType getType() {
         return type;
