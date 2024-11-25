@@ -106,7 +106,18 @@ public class GityaAccountService {
         return new GityaAccountResponse(account);
     }
 
-
+//    public List<GityaAccount> getAuthenticatedUserGityaAccounts() {
+//        // Get the authenticated user from the security context
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String email = authentication.getName(); // Assumes email is used as username
+//
+//        // Fetch the user by email
+//        User authenticatedUser = userRepository.findByEmail(email)
+//                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+//
+//        // Return the user's Gitya Account list
+//        return authenticatedUser.getGityaAccountList();
+//    }
 }
 
 

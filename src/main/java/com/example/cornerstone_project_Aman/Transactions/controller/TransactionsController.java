@@ -1,5 +1,6 @@
 package com.example.cornerstone_project_Aman.Transactions.controller;
 
+import com.example.cornerstone_project_Aman.Transactions.bo.FundsRequest;
 import com.example.cornerstone_project_Aman.Transactions.bo.TransactionsRequest;
 import com.example.cornerstone_project_Aman.Transactions.bo.TransactionsResponse;
 import com.example.cornerstone_project_Aman.Transactions.bo.TransferRequest;
@@ -69,4 +70,17 @@ public class TransactionsController {
         TransactionsResponse response = transactionsService.salfniToAccount(salfniRequest);
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/wallet/addFundsToGityaAccount")
+    public ResponseEntity<String> addFundsToGityaAccount(@RequestBody FundsRequest request) {
+        transactionsService.addFundsToGityaAccount(request);
+        return ResponseEntity.ok("Funds successfully added to Gitya account.");
+    }
+
+    @PostMapping("/wallet/takeFundsfromGityaAccount")
+    public ResponseEntity<String> takeFundsfromGityaAccount(@RequestBody FundsRequest request) {
+        transactionsService.withdrawFundsFromGityaAccount(request);
+        return ResponseEntity.ok("Funds successfully taken from Gitya account.");
+    }
+
 }

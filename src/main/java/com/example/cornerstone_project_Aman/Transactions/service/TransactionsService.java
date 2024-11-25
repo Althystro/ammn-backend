@@ -1,5 +1,8 @@
 package com.example.cornerstone_project_Aman.Transactions.service;
 
+import com.example.cornerstone_project_Aman.GtiyaAccount.entity.GityaAccount;
+import com.example.cornerstone_project_Aman.GtiyaAccount.repository.GityaAccountRepository;
+import com.example.cornerstone_project_Aman.Transactions.bo.FundsRequest;
 import com.example.cornerstone_project_Aman.Transactions.bo.TransactionsRequest;
 import com.example.cornerstone_project_Aman.Transactions.bo.TransactionsResponse;
 import com.example.cornerstone_project_Aman.Transactions.bo.TransferRequest;
@@ -11,6 +14,7 @@ import com.example.cornerstone_project_Aman.Users.repository.UserRepository;
 import com.example.cornerstone_project_Aman.Users.service.UserService;
 import com.example.cornerstone_project_Aman.Wallet.entity.Wallet;
 import com.example.cornerstone_project_Aman.Wallet.repository.WalletRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,17 +26,14 @@ import java.util.List;
 @Service
 public class TransactionsService {
     private final Date date = new Date(); // Initializes with the current date and time
-
-
+    @Autowired
+    GityaAccountRepository accountRepository;
     @Autowired
     private TransactionsRepository transactionsRepository;
-
     @Autowired
     private WalletRepository walletRepository;
-
     @Autowired
     private UserService userService;
-
     @Autowired
     private UserRepository userRepository;
 
@@ -223,6 +224,101 @@ public class TransactionsService {
         response.setWalletId(senderTransaction.getWallet().getId());
 
         return response;
+    }
+
+    @Transactional
+    public void addFundsToGityaAccount(FundsRequest request) {
+        // Retrieve authenticated user
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User authenticatedUser = (User) authentication.getPrincipal();
+
+        // Get user's wallet
+        Wallet userWallet = authenticatedUser.getWallet();
+        if (userWallet == null) {
+            throw new RuntimeException("Wallet not found for the authenticated user.");
+        }
+
+        // Validate sufficient balance in wallet
+        if (userWallet.getBalance() < request.getAmount()) {
+            throw new RuntimeException("Insufficient balance in wallet.");
+        }
+
+        // Find Gitya account by name and validate ownership
+        GityaAccount gityaAccount = authenticatedUser.getGityaAccountList().stream()
+                .filter(account -> account.getAccountName().equalsIgnoreCase(request.getAccountName()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Gitya account not found or does not belong to the user."));
+
+        userWallet.setBalance(userWallet.getBalance() + request.getAmount());
+        gityaAccount.setJointAccountBalance(gityaAccount.getJointAccountBalance() + request.getAmount());
+
+        // Save changes
+        walletRepository.save(userWallet);
+        accountRepository.save(gityaAccount);
+    }
+
+
+    @Transactional
+    public void takeFundsfromGityaAccount(FundsRequest request) {
+        // Retrieve authenticated user
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User authenticatedUser = (User) authentication.getPrincipal();
+
+        // Get user's wallet
+        Wallet userWallet = authenticatedUser.getWallet();
+        if (userWallet == null) {
+            throw new RuntimeException("Wallet not found for the authenticated user.");
+        }
+
+        // Validate sufficient balance in wallet
+        if (userWallet.getBalance() < request.getAmount()) {
+            throw new RuntimeException("Insufficient balance in wallet.");
+        }
+
+        // Find Gitya account by name and validate ownership
+        GityaAccount gityaAccount = authenticatedUser.getGityaAccountList().stream()
+                .filter(account -> account.getAccountName().equalsIgnoreCase(request.getAccountName()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Gitya account not found or does not belong to the user."));
+
+        userWallet.setBalance(userWallet.getBalance() - request.getAmount());
+        gityaAccount.setJointAccountBalance(gityaAccount.getJointAccountBalance() + request.getAmount());
+
+        // Save changes
+        walletRepository.save(userWallet);
+        accountRepository.save(gityaAccount);
+    }
+
+    @Transactional
+    public void withdrawFundsFromGityaAccount(FundsRequest request) {
+        // Retrieve authenticated user
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User authenticatedUser = (User) authentication.getPrincipal();
+
+        // Get user's wallet
+        Wallet userWallet = authenticatedUser.getWallet();
+        if (userWallet == null) {
+            throw new RuntimeException("Wallet not found for the authenticated user.");
+        }
+
+        // Find Gitya account by name and validate ownership
+        GityaAccount gityaAccount = authenticatedUser.getGityaAccountList().stream()
+                .filter(account -> account.getAccountName().equalsIgnoreCase(request.getAccountName()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Gitya account not found or does not belong to the user."));
+
+        // Validate sufficient balance in Gitya account
+        if (gityaAccount.getJointAccountBalance() < request.getAmount()) {
+            throw new RuntimeException("Insufficient balance in Gitya account.");
+        }
+
+        // Deduct from Gitya account and add to wallet
+        gityaAccount.setJointAccountBalance(gityaAccount.getJointAccountBalance() - request.getAmount());
+        userWallet.setBalance(userWallet.getBalance() + request.getAmount());
+
+        // Save changes
+        accountRepository.save(gityaAccount);
+        walletRepository.save(userWallet);
     }
 }
 
