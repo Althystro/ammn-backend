@@ -2,22 +2,31 @@ package com.example.cornerstone_project_Aman.GtiyaAccount.bo;
 
 import com.example.cornerstone_project_Aman.GtiyaAccount.entity.GityaAccount;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class GityaAccountResponse {
     private Long id;
     private Double jointAccountBalance;
     private Long inviteCode;
-    private String username;
+    private String accountName;
     private int numberOfUsers;
+    private List<UsersInAccount> users;
     private double remainingBalance;
 
     public GityaAccountResponse(GityaAccount account) {
         this.id = account.getId();
         this.jointAccountBalance = account.getJointAccountBalance();
         this.inviteCode = account.getInviteCode();
-        this.username = account.getUsername();
+        this.accountName = account.getAccountName();
         this.numberOfUsers = account.getNumberOfUsers();
         this.remainingBalance = account.getRemainingBalance();
+
+        this.users = account.getUsers().stream()
+                .map(UsersInAccount::new)
+                .collect(Collectors.toList());
     }
+
     public Long getId() {
         return id;
     }
@@ -42,12 +51,12 @@ public class GityaAccountResponse {
         this.inviteCode = inviteCode;
     }
 
-    public String getUsername() {
-        return username;
+    public String getAccountName() {
+        return accountName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
     }
 
     public int getNumberOfUsers() {
@@ -56,6 +65,14 @@ public class GityaAccountResponse {
 
     public void setNumberOfUsers(int numberOfUsers) {
         this.numberOfUsers = numberOfUsers;
+    }
+
+    public List<UsersInAccount> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<UsersInAccount> users) {
+        this.users = users;
     }
 
     public double getRemainingBalance() {

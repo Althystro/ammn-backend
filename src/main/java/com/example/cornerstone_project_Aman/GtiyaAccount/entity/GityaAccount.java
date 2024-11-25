@@ -1,12 +1,9 @@
 package com.example.cornerstone_project_Aman.GtiyaAccount.entity;
 
 import com.example.cornerstone_project_Aman.Users.entity.User;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -14,13 +11,28 @@ public class GityaAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private Double jointAccountBalance;
+
+    @Column(nullable = false)
     private Long inviteCode;
-    private String username;
+
+    @Column(nullable = false)
+    private String accountName;
+
+
+    @Column(nullable = false)
     private int numberOfUsers;
+
+    @Column(nullable = false)
     private double remainingBalance;
 
-    private List<User> users = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "gityaAccountList", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @JsonIgnoreProperties(value = {"gityaAccountList"})
+    private List<User> users;
+
 
     public Long getId() {
         return id;
@@ -30,12 +42,12 @@ public class GityaAccount {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getAccountName() {
+        return accountName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
     }
 
     public Double getJointAccountBalance() {
@@ -77,21 +89,26 @@ public class GityaAccount {
     public void setUsers(List<User> users) {
         this.users = users;
     }
+
+    public void addToUsers(User user) {
+        this.users.add(user);
+    }
+
     public void depositEqualAmount(double amount) {
         if (amount > 0) {
             this.remainingBalance += amount * this.numberOfUsers;
-            return;
         }
     }
-    public void addUser(String phoneNumber){
-        for(User user : users){
-            if(user.getPhoneNumber().equals(phoneNumber)){
-                return;
-            }
-            numberOfUsers++;
+
+    public void addUser(User user) {
+        if (!this.users.contains(user)) {
+            this.users.add(user);
+            user.getGityaAccountList().add(this);
         }
     }
-    public void removeUser(String phoneNumber){
+
+
+    public void removeUser(String phoneNumber) {
 
     }
 }

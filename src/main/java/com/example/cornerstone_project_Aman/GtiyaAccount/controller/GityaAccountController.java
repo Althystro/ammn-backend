@@ -1,55 +1,48 @@
 package com.example.cornerstone_project_Aman.GtiyaAccount.controller;
 
+import com.example.cornerstone_project_Aman.GtiyaAccount.bo.AddUserToGityaAccountRequest;
 import com.example.cornerstone_project_Aman.GtiyaAccount.bo.GityaAccountRequest;
 import com.example.cornerstone_project_Aman.GtiyaAccount.bo.GityaAccountResponse;
 import com.example.cornerstone_project_Aman.GtiyaAccount.service.GityaAccountService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/accounts")
+@RequestMapping("/users")
 public class GityaAccountController {
 
 
-    private GityaAccountService accountService;
+    private final GityaAccountService accountService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<GityaAccountResponse> getAccountById(@PathVariable Long id) {
-        GityaAccountResponse response = accountService.getAccountById(id);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public GityaAccountController(GityaAccountService accountService) {
+        this.accountService = accountService;
     }
 
-    @PostMapping
-    public ResponseEntity<GityaAccountResponse> createAccount(@RequestBody GityaAccountRequest request) {
-        GityaAccountResponse response = accountService.createAccount(request);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+
+    @PostMapping("/createGityaAccount")
+    public ResponseEntity<GityaAccountResponse> createAccountWithUsers(@RequestBody GityaAccountRequest request) {
+
+        GityaAccountResponse response = accountService.createGityaAccount(request);
+        System.out.println(response);
+        return ResponseEntity.ok(response);
     }
-    @PostMapping("/deposit")
-    public ResponseEntity<GityaAccountResponse> depositEqualAmount(
-            @PathVariable Long id,
-            @RequestParam double amountPerUser) {
-        GityaAccountResponse accountResponse = accountService.depositEqualAmount(id, amountPerUser);
-        return new ResponseEntity<>(accountResponse, HttpStatus.OK);
-    }
-    public ResponseEntity<GityaAccountResponse> addUser(
-            @PathVariable Long id,
-            @RequestParam String phoneNumber,
-            @RequestParam String adminPhoneNumber) {
-        GityaAccountResponse response = accountService.addUser(id, phoneNumber, adminPhoneNumber);
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-//    @PostMapping("/{accountId}/add-user")
-//    public ResponseEntity<GityaAccountResponse> addUser(
-//            @PathVariable Long accountId,
-//            @RequestParam String phoneNumber,
-//            @RequestParam String userPhoneNumber) {
-//
-//        GityaAccountResponse accountResponse = GityaAccountService.addUser(accountId, phoneNumber, userPhoneNumber);
-//        return ResponseEntity.ok(accountResponse);
-//    }
 
 
+    @PostMapping("/addUserToAccount")
+    public ResponseEntity<GityaAccountResponse> addUserToGityaAccount(@RequestBody AddUserToGityaAccountRequest addUserRequest) {
+
+        GityaAccountResponse response = accountService.addUserToGityaAccount(addUserRequest);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/join")
+    public ResponseEntity<GityaAccountResponse> joinGityaAccount(@RequestBody AddUserToGityaAccountRequest addUserRequest) {
+        GityaAccountResponse response = accountService.joinGityaAccount(addUserRequest);
+        return ResponseEntity.ok(response);
+    }
 }
 

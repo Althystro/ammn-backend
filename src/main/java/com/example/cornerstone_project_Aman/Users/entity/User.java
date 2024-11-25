@@ -1,5 +1,6 @@
 package com.example.cornerstone_project_Aman.Users.entity;
 
+import com.example.cornerstone_project_Aman.GtiyaAccount.entity.GityaAccount;
 import com.example.cornerstone_project_Aman.Wallet.entity.Wallet;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
@@ -8,49 +9,65 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     private Long id;
-
     @Column(nullable = false)
     private String firstName;
-
     @Column(nullable = false)
     private String lastName;
-
     @Column(unique = true, length = 100, nullable = false)
     private String email;
-
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String password;
-
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String civilId;
-
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String phoneNumber;
-
     @CreationTimestamp
-    @Column(updatable = false, name = "created_at")
+    @Column(updatable = true, name = "created_at")
     private Date createdAt;
-
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Date updatedAt;
-
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "wallet_id", referencedColumnName = "id", nullable = true)
     @JsonIgnoreProperties(value = {"user"})
     private Wallet wallet;
 
-    // Getters and Setters
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_gitya_account", // Name of the join table
+            joinColumns = @JoinColumn(name = "user_id"), // Foreign key for User
+            inverseJoinColumns = @JoinColumn(name = "gitya_account_id") // Foreign key for GityaAccount
+    )
+//    @JsonIgnoreProperties(value = {"users"})
+    private List<GityaAccount> gityaAccountList = new ArrayList<>();
+
+
+    public List<GityaAccount> getGityaAccountList() {
+        return gityaAccountList;
+    }
+
+    public void setGityaAccountList(List<GityaAccount> gityaAccountList) {
+        this.gityaAccountList = gityaAccountList;
+    }
+
+    public List<GityaAccount> addToGityaAccountList(GityaAccount gityaAccount) {
+        gityaAccountList.add(gityaAccount);
+        return this.gityaAccountList;
+    }
+
 
     public Long getId() {
         return id;
@@ -136,7 +153,12 @@ public class User implements UserDetails {
         }
     }
 
-    // Implementations of UserDetails methods
+    public void addGityaAccount(GityaAccount account) {
+        if (!this.gityaAccountList.contains(account)) {
+            this.gityaAccountList.add(account);
+            account.getUsers().add(this); // Synchronize both sides
+        }
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

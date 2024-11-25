@@ -2,8 +2,7 @@ package com.example.cornerstone_project_Aman.GtiyaAccount.bo;
 
 public class GityaAccountRequest {
     private Double jointAccountBalance;
-    private Long inviteCode;
-    private String username;
+    private String accountName;
     private int numberOfUsers;
 
     public Double getJointAccountBalance() {
@@ -14,13 +13,6 @@ public class GityaAccountRequest {
         this.jointAccountBalance = jointAccountBalance;
     }
 
-    public Long getInviteCode() {
-        return inviteCode;
-    }
-
-    public void setInviteCode(Long inviteCode) {
-        this.inviteCode = inviteCode;
-    }
 
     public int getNumberOfUsers() {
         return numberOfUsers;
@@ -30,11 +22,11 @@ public class GityaAccountRequest {
         this.numberOfUsers = numberOfUsers;
     }
 
-    public String getUsername() {
-        return username;
+    public String getAccountName() {
+        return accountName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
     }
 }

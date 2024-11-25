@@ -30,7 +30,6 @@ public class WalletService {
         Wallet userWallet = walletRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Wallet not found for this user"));
 
-
         return userWallet;
     }
 

@@ -4,7 +4,13 @@ import com.example.cornerstone_project_Aman.GtiyaAccount.entity.GityaAccount;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface GityaAccountRepository extends JpaRepository<GityaAccount,Long> {
+import java.util.Optional;
 
+@Repository
+public interface GityaAccountRepository extends JpaRepository<GityaAccount, Long> {
+    Optional<GityaAccount> findByAccountName(String accountName);
+
+    Optional<GityaAccount> findByInviteCode(Long inviteCode);
 }
+
+

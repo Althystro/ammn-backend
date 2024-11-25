@@ -41,8 +41,10 @@ public class AuthenticationService {
         user.setEmail(input.getEmail());
         Wallet wallet = new Wallet();
         List<Transactions> transactions = new ArrayList<>();
+//        List<GityaAccount> gityaAccountList = new ArrayList<>();
         wallet.setTransactions(transactions);
         user.setWallet(wallet);
+//        user.setGityaAccountList(gityaAccountList);
         user.setPassword(passwordEncoder.encode(input.getPassword()));
 
         return userRepository.save(user);
