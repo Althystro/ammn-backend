@@ -1,9 +1,6 @@
 package com.example.cornerstone_project_Aman.Transactions.controller;
 
-import com.example.cornerstone_project_Aman.Transactions.bo.FundsRequest;
-import com.example.cornerstone_project_Aman.Transactions.bo.TransactionsRequest;
-import com.example.cornerstone_project_Aman.Transactions.bo.TransactionsResponse;
-import com.example.cornerstone_project_Aman.Transactions.bo.TransferRequest;
+import com.example.cornerstone_project_Aman.Transactions.bo.*;
 import com.example.cornerstone_project_Aman.Transactions.entity.Transactions;
 import com.example.cornerstone_project_Aman.Transactions.service.TransactionsService;
 import com.example.cornerstone_project_Aman.Users.entity.User;
@@ -72,15 +69,15 @@ public class TransactionsController {
     }
 
     @PostMapping("/wallet/addFundsToGityaAccount")
-    public ResponseEntity<String> addFundsToGityaAccount(@RequestBody FundsRequest request) {
+    public ResponseEntity<TransferResponse> addFundsToGityaAccount(@RequestBody FundsRequest request) {
         transactionsService.addFundsToGityaAccount(request);
-        return ResponseEntity.ok("Funds successfully added to Gitya account.");
+        return ResponseEntity.ok(transactionsService.addFundsToGityaAccount(request));
     }
 
     @PostMapping("/wallet/takeFundsfromGityaAccount")
-    public ResponseEntity<String> takeFundsfromGityaAccount(@RequestBody FundsRequest request) {
-        transactionsService.withdrawFundsFromGityaAccount(request);
-        return ResponseEntity.ok("Funds successfully taken from Gitya account.");
+    public ResponseEntity<TransferResponse> takeFundsfromGityaAccount(@RequestBody FundsRequest request) {
+        transactionsService.takeFundsfromGityaAccount(request);
+        return ResponseEntity.ok(transactionsService.takeFundsfromGityaAccount(request));
     }
 
 }
