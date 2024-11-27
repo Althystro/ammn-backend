@@ -26,7 +26,6 @@ public class TransactionsController {
         this.walletService = walletService;
     }
 
-    //     Endpoint to get transactions for authenticated user's wallet
     @GetMapping("/wallet/transactions")
     public ResponseEntity<List<Transactions>> getTransactions() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

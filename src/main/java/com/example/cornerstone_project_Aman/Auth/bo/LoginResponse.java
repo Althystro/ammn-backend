@@ -3,8 +3,6 @@ package com.example.cornerstone_project_Aman.Auth.bo;
 public class LoginResponse {
     private String token;
 
-    private long expiresIn;
-
 
     public String getToken() {
         return token;
@@ -14,11 +12,5 @@ public class LoginResponse {
         this.token = token;
     }
 
-    public long getExpiresIn() {
-        return expiresIn;
-    }
 
-    public void setExpiresIn(long expiresIn) {
-        this.expiresIn = expiresIn;
-    }
 }

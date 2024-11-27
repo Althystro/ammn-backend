@@ -26,11 +26,44 @@ public class Transactions {
     @Column(nullable = false)
     private Date transactionDate;
 
+    @Column
+    private String firstName;
+
+    @Column
+    private String lastName;
+
+    @Column
+    private String userEmail;
+
     @ManyToOne
     @JoinColumn(name = "wallet_id", referencedColumnName = "id", nullable = false)
     @JsonIgnoreProperties(value = {"transactions"})
 
     private Wallet wallet;
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
 
     public Long getId() {
         return id;

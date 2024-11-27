@@ -190,35 +190,48 @@ public class TransactionsService {
 
         List<Transactions> recipientTransactions = recipientWallet.getTransactions();
 
+        // Create sender transaction
         Transactions senderTransaction = new Transactions();
-        senderTransaction.setTransactionDate(date);
+        senderTransaction.setTransactionDate(new Date());
         senderTransaction.setType(TransactionType.Taslefa);
         senderTransaction.setAmount(salfniRequest.getAmount());
         senderTransaction.setWallet(senderWallet);
+        senderTransaction.setFirstName(recipientUser.getFirstName()); // Add recipient's first name
+        senderTransaction.setLastName(recipientUser.getLastName());   // Add recipient's last name
+        senderTransaction.setUserEmail(recipientUser.getEmail());     // Add recipient's email
 
         senderWallet.setBalance(senderWallet.getBalance() - salfniRequest.getAmount());
         senderTransactions.add(senderTransaction);
 
         Transactions recipientTransaction = new Transactions();
-        recipientTransaction.setTransactionDate(date);
-        recipientTransaction.setType(TransactionType.Taslefa);
+        recipientTransaction.setTransactionDate(new Date());
+        recipientTransaction.setType(TransactionType.TaslefaTo);
         recipientTransaction.setAmount(salfniRequest.getAmount());
         recipientTransaction.setWallet(recipientWallet);
+        recipientTransaction.setFirstName(currentUser.getFirstName()); // Add sender's first name
+        recipientTransaction.setLastName(currentUser.getLastName());   // Add sender's last name
+        recipientTransaction.setUserEmail(currentUser.getEmail());     // Add sender's email
 
+        // Update recipient wallet balance and transactions
         recipientWallet.setBalance(recipientWallet.getBalance() + salfniRequest.getAmount());
         recipientTransactions.add(recipientTransaction);
 
+        // Save transactions and wallets
         transactionsRepository.save(senderTransaction);
         transactionsRepository.save(recipientTransaction);
 
         walletRepository.save(senderWallet);
         walletRepository.save(recipientWallet);
 
+        // Prepare response
         TransactionsResponse response = new TransactionsResponse();
         response.setAmount(salfniRequest.getAmount());
         response.setType(TransactionType.Taslefa);
-        response.setTransactionDate(recipientTransaction.getTransactionDate());
-        response.setWalletId(senderTransaction.getWallet().getId());
+        response.setTransactionDate(senderTransaction.getTransactionDate());
+        response.setFirstName(recipientUser.getFirstName());
+        response.setLastName(recipientUser.getLastName());
+        response.setUserEmail(recipientUser.getEmail());
+        response.setWalletId(senderWallet.getId());
 
         return response;
     }

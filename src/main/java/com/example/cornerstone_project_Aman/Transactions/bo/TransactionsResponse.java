@@ -9,8 +9,34 @@ public class TransactionsResponse {
     private TransactionType type;
     private double amount;
     private Date transactionDate;
+    private String userEmail;
+    private String firstName;
+    private String lastName;
     private Long walletId;
+    
+    public String getUserEmail() {
+        return userEmail;
+    }
 
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstname) {
+        this.firstName = firstname;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
     public TransactionType getType() {
         return type;
