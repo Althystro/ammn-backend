@@ -26,6 +26,7 @@ public class Transactions {
     @Column(nullable = false)
     private Date transactionDate;
 
+    // TODO Relation with the sender user
     @Column
     private String firstName;
 
@@ -35,11 +36,23 @@ public class Transactions {
     @Column
     private String userEmail;
 
+    @Enumerated(EnumType.STRING)
+    @Column
+    private TransactionType taslefaStatus;
+
     @ManyToOne
     @JoinColumn(name = "wallet_id", referencedColumnName = "id", nullable = false)
     @JsonIgnoreProperties(value = {"transactions"})
-
     private Wallet wallet;
+
+
+    public TransactionType getTaslefaStatus() {
+        return taslefaStatus;
+    }
+
+    public void setTaslefaStatus(TransactionType taslefaStatus) {
+        this.taslefaStatus = taslefaStatus;
+    }
 
     public String getFirstName() {
         return firstName;

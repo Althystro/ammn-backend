@@ -198,8 +198,8 @@ public class TransactionsService {
         senderTransaction.setWallet(senderWallet);
         senderTransaction.setFirstName(recipientUser.getFirstName()); // Add recipient's first name
         senderTransaction.setLastName(recipientUser.getLastName());   // Add recipient's last name
-        senderTransaction.setUserEmail(recipientUser.getEmail());     // Add recipient's email
-
+        senderTransaction.setUserEmail(recipientUser.getEmail());
+        senderTransaction.setTaslefaStatus(TransactionType.Incomplete);
         senderWallet.setBalance(senderWallet.getBalance() - salfniRequest.getAmount());
         senderTransactions.add(senderTransaction);
 
@@ -210,9 +210,9 @@ public class TransactionsService {
         recipientTransaction.setWallet(recipientWallet);
         recipientTransaction.setFirstName(currentUser.getFirstName()); // Add sender's first name
         recipientTransaction.setLastName(currentUser.getLastName());   // Add sender's last name
-        recipientTransaction.setUserEmail(currentUser.getEmail());     // Add sender's email
+        recipientTransaction.setUserEmail(currentUser.getEmail());
+        recipientTransaction.setTaslefaStatus(TransactionType.Incomplete);
 
-        // Update recipient wallet balance and transactions
         recipientWallet.setBalance(recipientWallet.getBalance() + salfniRequest.getAmount());
         recipientTransactions.add(recipientTransaction);
 
@@ -236,85 +236,91 @@ public class TransactionsService {
         return response;
     }
 
-//    @Transactional
-//    public void addFundsToGityaAccount(FundsRequest request) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        User authenticatedUser = (User) authentication.getPrincipal();
-//
-//        Wallet userWallet = authenticatedUser.getWallet();
-//        if (userWallet == null) {
-//            throw new RuntimeException("Wallet not found for the authenticated user.");
-//        }
-//
-//        if (userWallet.getBalance() < request.getAmount()) {
-//            throw new RuntimeException("Insufficient balance in wallet.");
-//        }
-//
-//        GityaAccount gityaAccount = authenticatedUser.getGityaAccountList().stream()
-//                .filter(account -> account.getAccountName().equalsIgnoreCase(request.getAccountName()))
-//                .findFirst()
-//                .orElseThrow(() -> new RuntimeException("Gitya account not found or does not belong to the user."));
-//
-//        userWallet.setBalance(userWallet.getBalance() + request.getAmount());
-//        gityaAccount.setJointAccountBalance(gityaAccount.getJointAccountBalance() + request.getAmount());
-//
-//        walletRepository.save(userWallet);
-//        accountRepository.save(gityaAccount);
-//    }
+    public TransactionsResponse salfniReturn(TransferRequest salfniRequest) {
+        // Get the  user
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
+
+        Wallet recipientWallet = currentUser.getWallet();
+        if (recipientWallet == null) {
+            throw new IllegalArgumentException("Recipient wallet not found.");
+        }
+
+        List<Transactions> recipientTransactions = recipientWallet.getTransactions();
+
+        // Find the original transaction in the recipient's transactions
+        Transactions originalTransaction = recipientTransactions.stream()
+                .filter(transaction -> transaction.getId().equals(salfniRequest.getId()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Original transaction not found."));
+
+        // Reverse the transaction: deduct from recipient and add back to sender
+        double amountToBeReturned = originalTransaction.getAmount();
+        // Ensure there are sufficient funds in the recipient's wallet
+        if (recipientWallet.getBalance() < amountToBeReturned) {
+            throw new IllegalArgumentException("Insufficient balance in recipient's wallet.");
+        }
+
+        // Deduct amount from recipient
+        recipientWallet.setBalance(recipientWallet.getBalance() - amountToBeReturned);
+        walletRepository.save(recipientWallet);
+
+        // Find the original sender using their email from the transaction
+        User senderUser = userService.findByEmailString(originalTransaction.getUserEmail());
+        if (senderUser == null) {
+            throw new IllegalArgumentException("Sender not found with the provided email.");
+        }
+
+        Wallet senderWallet = senderUser.getWallet();
+        if (senderWallet == null) {
+            throw new IllegalArgumentException("Sender wallet not found.");
+        }
+
+        // Add amount back to sender's wallet
+        senderWallet.setBalance(senderWallet.getBalance() + amountToBeReturned);
+        walletRepository.save(senderWallet);
+
+        // Create a new transaction for sender indicating return
+        Transactions returnTransactionForSender = new Transactions();
+        returnTransactionForSender.setTransactionDate(new Date());
+        returnTransactionForSender.setType(TransactionType.TaslefaReturned);
+        returnTransactionForSender.setAmount(amountToBeReturned);
+        returnTransactionForSender.setWallet(senderWallet);
+        returnTransactionForSender.setFirstName(currentUser.getFirstName());
+        returnTransactionForSender.setLastName(currentUser.getLastName());
+        returnTransactionForSender.setUserEmail(currentUser.getEmail());
+        returnTransactionForSender.setTaslefaStatus(TransactionType.Complete);
+
+        // Create a new transaction for recipient indicating deduction
+        Transactions deductionTransactionForRecipient = new Transactions();
+        deductionTransactionForRecipient.setTransactionDate(new Date());
+        deductionTransactionForRecipient.setType(TransactionType.TaslefaReturned);
+        deductionTransactionForRecipient.setAmount(amountToBeReturned);
+        deductionTransactionForRecipient.setWallet(recipientWallet);
+        deductionTransactionForRecipient.setFirstName(senderUser.getFirstName());
+        deductionTransactionForRecipient.setLastName(senderUser.getLastName());
+        deductionTransactionForRecipient.setUserEmail(senderUser.getEmail());
+        deductionTransactionForRecipient.setTaslefaStatus(TransactionType.Complete);
+
+        // Save transactions and wallets
+        transactionsRepository.save(returnTransactionForSender);
+        transactionsRepository.save(deductionTransactionForRecipient);
 
 
-    //    @Transactional
-//    public void takeFundsfromGityaAccount(FundsRequest request) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        User authenticatedUser = (User) authentication.getPrincipal();
-//
-//        Wallet userWallet = authenticatedUser.getWallet();
-//        if (userWallet == null) {
-//            throw new RuntimeException("Wallet not found for the authenticated user.");
-//        }
-//
-//        if (userWallet.getBalance() < request.getAmount()) {
-//            throw new RuntimeException("Insufficient balance in wallet.");
-//        }
-//
-//        GityaAccount gityaAccount = authenticatedUser.getGityaAccountList().stream()
-//                .filter(account -> account.getAccountName().equalsIgnoreCase(request.getAccountName()))
-//                .findFirst()
-//                .orElseThrow(() -> new RuntimeException("Gitya account not found or does not belong to the user."));
-//
-//        userWallet.setBalance(userWallet.getBalance() - request.getAmount());
-//        gityaAccount.setJointAccountBalance(gityaAccount.getJointAccountBalance() + request.getAmount());
-//
-//        // Save changes
-//        walletRepository.save(userWallet);
-//        accountRepository.save(gityaAccount);
-//    }
-//
-//    @Transactional
-//    public void withdrawFundsFromGityaAccount(FundsRequest request) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        User authenticatedUser = (User) authentication.getPrincipal();
-//
-//        Wallet userWallet = authenticatedUser.getWallet();
-//        if (userWallet == null) {
-//            throw new RuntimeException("Wallet not found for the authenticated user.");
-//        }
-//
-//        GityaAccount gityaAccount = authenticatedUser.getGityaAccountList().stream()
-//                .filter(account -> account.getAccountName().equalsIgnoreCase(request.getAccountName()))
-//                .findFirst()
-//                .orElseThrow(() -> new RuntimeException("Gitya account not found or does not belong to the user."));
-//
-//        if (gityaAccount.getJointAccountBalance() < request.getAmount()) {
-//            throw new RuntimeException("Insufficient balance in Gitya account.");
-//        }
-//
-//        gityaAccount.setJointAccountBalance(gityaAccount.getJointAccountBalance() - request.getAmount());
-//        userWallet.setBalance(userWallet.getBalance() + request.getAmount());
-//
-//        accountRepository.save(gityaAccount);
-//        walletRepository.save(userWallet);
-//    }
+        // Prepare response
+        TransactionsResponse response = new TransactionsResponse();
+        response.setAmount(amountToBeReturned);
+        response.setType(TransactionType.TaslefaReturned);
+        response.setTransactionDate(returnTransactionForSender.getTransactionDate());
+        response.setFirstName(senderUser.getFirstName());
+        response.setLastName(senderUser.getLastName());
+        response.setUserEmail(senderUser.getEmail());
+        response.setWalletId(senderWallet.getId());
+        response.setTaslefaStatus(TransactionType.Complete);
+
+        return response;
+    }
+
     @Transactional
     public TransferResponse addFundsToGityaAccount(FundsRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -399,6 +405,72 @@ public class TransactionsService {
         return response;
     }
 
+    @Transactional
+    public void completeTransaction(TransactionsRequest request) {
+        // Get the authenticated user
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
 
+        // Get the sender's wallet and transaction list
+        Wallet senderWallet = currentUser.getWallet();
+        List<Transactions> senderTransactions = senderWallet.getTransactions();
+
+        // Find the sender's transaction by ID
+        Transactions senderTransaction = senderTransactions.stream()
+                .filter(transaction -> transaction.getId().toString().equals(request.getId().toString()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Transaction not found for the current user"));
+
+        // Ensure the transaction is incomplete and of type Taslefa or TaslefaTo
+        if (!"Incomplete".equals(senderTransaction.getTaslefaStatus().toString())) {
+            throw new IllegalStateException("Transaction is already completed");
+        }
+
+        if (!TransactionType.Taslefa.equals(senderTransaction.getType()) &&
+                !TransactionType.TaslefaTo.equals(senderTransaction.getType())) {
+            throw new IllegalArgumentException("Invalid transaction type for completion");
+        }
+
+        // Update sender's transaction details
+        senderTransaction.setTaslefaStatus(TransactionType.Complete);
+        senderTransaction.setType(TransactionType.TaslefaReturned);
+
+        // Find the recipient using their email from the sender's transaction
+        String recipientEmail = senderTransaction.getUserEmail();
+        User recipientUser = userService.findByEmailString(recipientEmail);
+        if (recipientUser == null) {
+            throw new IllegalArgumentException("Recipient not found with the provided email.");
+        }
+
+        // Access the recipient's wallet
+        Wallet recipientWallet = recipientUser.getWallet();
+        if (recipientWallet == null) {
+            throw new IllegalArgumentException("Recipient wallet not found.");
+        }
+
+        // Find the recipient's corresponding transaction using amount and transaction date
+        Transactions recipientTransaction = recipientWallet.getTransactions().stream()
+                .filter(transaction ->
+                        transaction.getAmount() == senderTransaction.getAmount() &&
+                                transaction.getTransactionDate().equals(senderTransaction.getTransactionDate()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Recipient transaction not found."));
+
+        // Update recipient's transaction details
+        recipientTransaction.setTaslefaStatus(TransactionType.Complete);
+        recipientTransaction.setType(TransactionType.TaslefaReturned);
+
+        // Transfer funds: Add back to sender and deduct from recipient
+        double amount = senderTransaction.getAmount();
+        senderWallet.setBalance(senderWallet.getBalance() - amount);
+        recipientWallet.setBalance(recipientWallet.getBalance() + amount);
+
+        // Save updated transactions and wallets
+        transactionsRepository.save(senderTransaction);
+        transactionsRepository.save(recipientTransaction);
+        walletRepository.save(senderWallet);
+        walletRepository.save(recipientWallet);
+    }
 }
+
 

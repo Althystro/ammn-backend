@@ -9,10 +9,7 @@ import com.example.cornerstone_project_Aman.Wallet.service.WalletService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -67,6 +64,12 @@ public class TransactionsController {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping("/wallet/transactions/salfniReturned")
+    public ResponseEntity<TransactionsResponse> salfniReturned(@RequestBody TransferRequest salfniRequest) {
+        TransactionsResponse response = transactionsService.salfniReturn(salfniRequest);
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/wallet/addFundsToGityaAccount")
     public ResponseEntity<TransferResponse> addFundsToGityaAccount(@RequestBody FundsRequest request) {
         transactionsService.addFundsToGityaAccount(request);
@@ -79,4 +82,12 @@ public class TransactionsController {
         return ResponseEntity.ok(transactionsService.takeFundsfromGityaAccount(request));
     }
 
+    @PutMapping("/wallet/transactions/completed")
+    public ResponseEntity<String> completeTransaction(@RequestBody TransactionsRequest transactionsRequest) {
+        // Get the authenticated user
+        // Call the service method to complete the transaction
+        transactionsService.completeTransaction(transactionsRequest);
+
+        return ResponseEntity.ok("Transaction completed successfully.");
+    }
 }

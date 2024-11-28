@@ -13,7 +13,17 @@ public class TransactionsResponse {
     private String firstName;
     private String lastName;
     private Long walletId;
-    
+    private TransactionType taslefaStatus;
+
+
+    public TransactionType getTaslefaStatus() {
+        return taslefaStatus;
+    }
+
+    public void setTaslefaStatus(TransactionType taslefaStatus) {
+        this.taslefaStatus = taslefaStatus;
+    }
+
     public String getUserEmail() {
         return userEmail;
     }

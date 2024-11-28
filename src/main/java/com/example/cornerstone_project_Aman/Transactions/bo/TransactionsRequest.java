@@ -8,7 +8,15 @@ public class TransactionsRequest {
     private TransactionType type;
     private double amount;
     private Date transactionDate;
+    private Long id;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public TransactionType getType() {
         return type;

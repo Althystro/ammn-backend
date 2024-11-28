@@ -12,7 +12,23 @@ public class TransferRequest {
     private String email;
     private Date transactionDate;
     private Wallet wallet;
+    private long id;
 
+    public Wallet getWallet() {
+        return wallet;
+    }
+
+    public void setWallet(Wallet wallet) {
+        this.wallet = wallet;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getEmail() {
         return email;
